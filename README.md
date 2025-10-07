@@ -179,7 +179,7 @@ android {
 - **Memory Usage**: < 100MB
 - **Resolution**: Up to 1920x1080
 
-## 🧪 Testing
+##  Testing
 
 ### Android Testing
 1. **Unit Tests**: JNI function testing
@@ -191,7 +191,7 @@ android {
 2. **Visualization Tests**: Frame rendering accuracy
 3. **Performance Tests**: Chart rendering performance
 
-## 🚀 Deployment
+##  Deployment
 
 ### Android App
 1. **Debug Build**
