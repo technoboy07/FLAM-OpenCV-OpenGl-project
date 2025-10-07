@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCV OpenGL Web Viewer - Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status.connected { background: #d4edda; color: #155724; }
+        .status.disconnected { background: #f8d7da; color: #721c24; }
+        .controls {
+            margin: 20px 0;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .info {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OpenCV OpenGL Web Viewer - Test Page</h1>
+        
+        <div id="connection-status" class="status disconnected">
+            Status: Disconnected
+        </div>
+        
+        <div class="controls">
+            <button id="connect-btn" class="btn btn-primary">Connect to Server</button>
+            <button id="disconnect-btn" class="btn btn-warning">Disconnect</button>
+            <button id="clear-btn" class="btn btn-success">Clear Data</button>
+        </div>
+        
+        <div class="info">
+            <h3>Test Instructions:</h3>
+            <ol>
+                <li>Start the test server: <code>python3 server.py</code></li>
+                <li>Click "Connect to Server" to establish WebSocket connection</li>
+                <li>Observe the mock frame data and performance metrics</li>
+                <li>Test different processing modes and FPS values</li>
+            </ol>
+        </div>
+        
+        <div id="data-display">
+            <h3>Received Data:</h3>
+            <pre id="data-output">No data received yet...</pre>
+        </div>
+        
+        <div id="stats-display">
+            <h3>Performance Stats:</h3>
+            <div id="stats-output">No stats available</div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let frameCount = 0;
+        let statsData = null;
+        
+        const statusEl = document.getElementById('connection-status');
+        const dataOutput = document.getElementById('data-output');
+        const statsOutput = document.getElementById('stats-output');
+        
+        function updateStatus(message, isConnected) {
+            statusEl.textContent = `Status: ${message}`;
+            statusEl.className = `status ${isConnected ? 'connected' : 'disconnected'}`;
+        }
+        
+        function connect() {
+            if (ws) {
+                ws.close();
+            }
+            
+            ws = new WebSocket('ws://localhost:8080/ws');
+            
+            ws.onopen = () => {
+                updateStatus('Connected to WebSocket server', true);
+                console.log('WebSocket connected');
+            };
+            
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleMessage(data);
+                } catch (e) {
+                    console.error('Failed to parse message:', e);
+                }
+            };
+            
+            ws.onclose = () => {
+                updateStatus('Disconnected from server', false);
+                console.log('WebSocket disconnected');
+            };
+            
+            ws.onerror = (error) => {
+                updateStatus('Connection error', false);
+                console.error('WebSocket error:', error);
+            };
+        }
+        
+        function disconnect() {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+        }
+        
+        function handleMessage(message) {
+            frameCount++;
+            
+            // Update data display
+            dataOutput.textContent = `Frame #${frameCount}\n${JSON.stringify(message, null, 2)}`;
+            
+            // Handle different message types
+            if (message.type === 'frame') {
+                const frameData = message.data;
+                console.log('Frame data:', frameData);
+            } else if (message.type === 'stats') {
+                statsData = message.data;
+                updateStatsDisplay();
+            } else if (message.type === 'info') {
+                console.log('Server info:', message.data);
+            }
+        }
+        
+        function updateStatsDisplay() {
+            if (statsData) {
+                statsOutput.innerHTML = `
+                    <p><strong>Average FPS:</strong> ${statsData.averageFPS.toFixed(1)}</p>
+                    <p><strong>Max FPS:</strong> ${statsData.maxFPS.toFixed(1)}</p>
+                    <p><strong>Min FPS:</strong> ${statsData.minFPS.toFixed(1)}</p>
+                    <p><strong>Average Processing Time:</strong> ${statsData.averageProcessingTime.toFixed(2)}ms</p>
+                    <p><strong>Total Frames:</strong> ${statsData.totalFrames}</p>
+                    <p><strong>Uptime:</strong> ${(statsData.uptime / 1000).toFixed(1)}s</p>
+                `;
+            }
+        }
+        
+        function clearData() {
+            frameCount = 0;
+            statsData = null;
+            dataOutput.textContent = 'No data received yet...';
+            statsOutput.textContent = 'No stats available';
+        }
+        
+        // Event listeners
+        document.getElementById('connect-btn').addEventListener('click', connect);
+        document.getElementById('disconnect-btn').addEventListener('click', disconnect);
+        document.getElementById('clear-btn').addEventListener('click', clearData);
+        
+        // Auto-connect on page load
+        window.addEventListener('load', () => {
+            console.log('Test page loaded. Click "Connect to Server" to start testing.');
+        });
+    </script>
+</body>
+</html>

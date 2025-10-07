@@ -1,0 +1,38 @@
+{
+  "buildFiles": [
+    "/home/deekshith/android-opencv-opengl-project/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/deekshith/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/deekshith/android-opencv-opengl-project/app/.cxx/Debug/2l11p3n5/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/deekshith/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/deekshith/android-opencv-opengl-project/app/.cxx/Debug/2l11p3n5/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "opencv_processor::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "x86",
+      "artifactName": "opencv_processor",
+      "output": "/home/deekshith/android-opencv-opengl-project/app/build/intermediates/cxx/Debug/2l11p3n5/obj/x86/libopencv_processor.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/deekshith/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/deekshith/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

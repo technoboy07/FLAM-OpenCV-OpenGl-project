@@ -1,0 +1,26 @@
+R_DEF: Internal format may change without notice
+local
+color accent
+color black
+color primary
+color primary_dark
+color white
+drawable ic_launcher
+drawable ic_launcher_round
+id fps_text
+id gl_surface_view
+id mode_button
+id resolution_text
+id toggle_processing_button
+layout activity_main
+string app_name
+string camera_permission_required
+string mode_blur
+string mode_canny
+string mode_grayscale
+string mode_original
+string processing_disabled
+string processing_enabled
+style Theme.OpenCVOpenGLApp
+xml backup_rules
+xml data_extraction_rules

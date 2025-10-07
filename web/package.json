@@ -1,0 +1,19 @@
+{
+  "name": "opencv-opengl-web-viewer",
+  "version": "1.0.0",
+  "description": "TypeScript web viewer for OpenCV OpenGL Android app",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "serve": "python3 -m http.server 8080",
+    "start": "npm run build && npm run serve"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.0"
+  }
+}

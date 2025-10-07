@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenCV OpenGL App</string>
+    <string name="camera_permission_required">Camera permission is required for this app to function</string>
+    <string name="processing_enabled">Processing enabled</string>
+    <string name="processing_disabled">Processing disabled</string>
+    <string name="mode_grayscale">Grayscale</string>
+    <string name="mode_canny">Canny Edge</string>
+    <string name="mode_blur">Blur</string>
+    <string name="mode_original">Original</string>
+</resources>

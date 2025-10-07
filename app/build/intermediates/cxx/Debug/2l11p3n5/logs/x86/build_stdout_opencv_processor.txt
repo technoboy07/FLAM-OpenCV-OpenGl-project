@@ -1,0 +1,2 @@
+ninja: Entering directory `/home/deekshith/android-opencv-opengl-project/app/.cxx/Debug/2l11p3n5/x86'
+ninja: no work to do.

@@ -1,0 +1,4 @@
+# ninja log v5
+0	975	1759814204696008093	CMakeFiles/opencv_processor.dir/opencv_processor.cpp.o	c15582321cad3cde
+0	980	1759814204703008093	CMakeFiles/opencv_processor.dir/frame_processor.cpp.o	bd6e3aeed6d7fb54
+980	1273	1759814204990008102	/home/deekshith/android-opencv-opengl-project/app/build/intermediates/cxx/Debug/2l11p3n5/obj/x86/libopencv_processor.so	92e5cb3209bf1e79

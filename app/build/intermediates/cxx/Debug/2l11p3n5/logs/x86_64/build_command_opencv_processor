@@ -1,0 +1,4 @@
+/home/deekshith/Android/Sdk/cmake/3.22.1/bin/ninja \
+  -C \
+  /home/deekshith/android-opencv-opengl-project/app/.cxx/Debug/2l11p3n5/x86_64 \
+  opencv_processor

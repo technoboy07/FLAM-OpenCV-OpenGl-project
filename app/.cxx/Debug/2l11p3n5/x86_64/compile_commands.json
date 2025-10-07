@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/deekshith/android-opencv-opengl-project/app/.cxx/Debug/2l11p3n5/x86_64",
+  "command": "/home/deekshith/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=x86_64-none-linux-android24 --sysroot=/home/deekshith/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dopencv_processor_EXPORTS -isystem /home/deekshith/android-opencv-opengl-project/OpenCV-android-sdk/sdk/native/jni/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -fno-limit-debug-info  -fPIC -o CMakeFiles/opencv_processor.dir/opencv_processor.cpp.o -c /home/deekshith/android-opencv-opengl-project/app/src/main/cpp/opencv_processor.cpp",
+  "file": "/home/deekshith/android-opencv-opengl-project/app/src/main/cpp/opencv_processor.cpp"
+},
+{
+  "directory": "/home/deekshith/android-opencv-opengl-project/app/.cxx/Debug/2l11p3n5/x86_64",
+  "command": "/home/deekshith/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=x86_64-none-linux-android24 --sysroot=/home/deekshith/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dopencv_processor_EXPORTS -isystem /home/deekshith/android-opencv-opengl-project/OpenCV-android-sdk/sdk/native/jni/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -fno-limit-debug-info  -fPIC -o CMakeFiles/opencv_processor.dir/frame_processor.cpp.o -c /home/deekshith/android-opencv-opengl-project/app/src/main/cpp/frame_processor.cpp",
+  "file": "/home/deekshith/android-opencv-opengl-project/app/src/main/cpp/frame_processor.cpp"
+}
+]
