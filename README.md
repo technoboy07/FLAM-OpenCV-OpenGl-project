@@ -2,7 +2,7 @@
 
 A comprehensive Android application that demonstrates real-time camera frame processing using OpenCV (C++) through JNI, OpenGL ES rendering, and a TypeScript-based web viewer for visualization.
 
-## 🚀 Features
+##  Features
 
 - **Real-time Camera Processing**: Live camera feed capture using Camera2 API
 - **OpenCV C++ Processing**: Native C++ image processing with JNI bridge
@@ -11,7 +11,7 @@ A comprehensive Android application that demonstrates real-time camera frame pro
 - **TypeScript Web Viewer**: Real-time visualization with performance monitoring
 - **Performance Monitoring**: FPS tracking and processing time analysis
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ├── app/                          # Android Application
@@ -24,7 +24,7 @@ A comprehensive Android application that demonstrates real-time camera frame pro
 └── README.md                    # This file
 ```
 
-## 📋 Prerequisites
+##  Prerequisites
 
 ### Android Development
 - Android Studio Arctic Fox or later
@@ -36,7 +36,7 @@ A comprehensive Android application that demonstrates real-time camera frame pro
 - Node.js 18+ and npm
 - TypeScript 5.0+
 
-## 🛠️ Setup Instructions
+##  Setup Instructions
 
 ### 1. Android Project Setup
 
@@ -82,7 +82,7 @@ A comprehensive Android application that demonstrates real-time camera frame pro
    - Navigate to `http://localhost:8080`
    - The web viewer will attempt to connect to the Android app via WebSocket
 
-## 🎯 Core Components
+##  Core Components
 
 ### Android App Components
 
@@ -172,7 +172,7 @@ android {
 }
 ```
 
-## 📊 Performance Targets
+##  Performance Targets
 
 - **FPS**: 15+ frames per second
 - **Processing Time**: < 50ms per frame
@@ -236,7 +236,7 @@ android {
    - Optimize OpenCV processing
    - Check device capabilities
 
-## 📈 Performance Optimization
+##  Performance Optimization
 
 ### Android Optimizations
 - Use OpenGL ES 2.0 for hardware acceleration
@@ -250,7 +250,7 @@ android {
 - Optimize canvas operations
 - Implement data compression for large frames
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -258,11 +258,11 @@ android {
 4. Add tests if applicable
 5. Submit a pull request
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🎓 Learning Outcomes
+##  Learning Outcomes
 
 This project demonstrates:
 - **Native Android Development**: Camera APIs, OpenGL ES, JNI
@@ -271,7 +271,7 @@ This project demonstrates:
 - **Performance Optimization**: Real-time processing techniques
 - **Cross-Platform Integration**: Android ↔ Web communication
 
-## 📞 Support
+##  Support
 
 For questions or issues:
 - Create an issue in the repository
