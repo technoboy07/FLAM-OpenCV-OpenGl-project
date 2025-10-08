@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_REQUEST = 1001;
     
     private CameraGLSurfaceView glSurfaceView;
-    private CameraHandler cameraHandler;
+    private SimpleCameraHandler cameraHandler;
     private Button toggleProcessingButton;
     private Button modeButton;
     private TextView fpsTextView;
@@ -40,11 +40,8 @@ public class MainActivity extends AppCompatActivity {
         setupCamera();
         setupFPSMonitor();
         
-        if (checkCameraPermission()) {
-            startCamera();
-        } else {
-            requestCameraPermission();
-        }
+        // Always request permission first, don't start camera automatically
+        requestCameraPermission();
     }
 
     private void initViews() {
@@ -61,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupCamera() {
-        cameraHandler = new CameraHandler(this);
+        cameraHandler = new SimpleCameraHandler(this);
         cameraHandler.setGLSurfaceView(glSurfaceView);
         glSurfaceView.setCameraHandler(cameraHandler);
     }
@@ -78,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestCameraPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+            // Show explanation if needed
+            Toast.makeText(this, "Camera permission is needed to show camera preview", Toast.LENGTH_LONG).show();
+        }
+        
         ActivityCompat.requestPermissions(this, 
                 new String[]{Manifest.permission.CAMERA}, 
                 CAMERA_PERMISSION_REQUEST);
@@ -89,10 +91,12 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_PERMISSION_REQUEST) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Camera permission granted! Starting camera...", Toast.LENGTH_SHORT).show();
                 startCamera();
             } else {
-                Toast.makeText(this, "Camera permission is required", Toast.LENGTH_LONG).show();
-                finish();
+                Toast.makeText(this, "Camera permission denied. App will show test pattern instead.", Toast.LENGTH_LONG).show();
+                // Show test pattern instead of closing the app
+                glSurfaceView.showTestPattern();
             }
         }
     }
@@ -101,10 +105,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             cameraHandler.startPreview();
             updateResolutionText();
+            
             Log.d(TAG, "Camera started successfully");
+            Toast.makeText(this, "Camera started successfully - should see live feed", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e(TAG, "Failed to start camera", e);
-            Toast.makeText(this, "Failed to start camera", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Failed to start camera - showing test pattern", Toast.LENGTH_LONG).show();
+            // Fallback to test pattern if camera fails
+            glSurfaceView.showTestPattern();
         }
     }
 
@@ -143,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (cameraHandler != null && !cameraHandler.isPreviewRunning()) {
+        // Only start camera if permission is granted and not already running
+        if (checkCameraPermission() && cameraHandler != null && !cameraHandler.isPreviewRunning()) {
             startCamera();
         }
     }

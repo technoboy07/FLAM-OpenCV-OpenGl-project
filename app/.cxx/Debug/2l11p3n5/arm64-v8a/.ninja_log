@@ -4,3 +4,7 @@
 0	1576	1759814201679008001	CMakeFiles/opencv_processor.dir/opencv_processor.cpp.o	9437f10b3ef0795c
 0	1576	1759814201685008001	CMakeFiles/opencv_processor.dir/frame_processor.cpp.o	853906d783b0457d
 1576	1802	1759814201914008008	/home/deekshith/android-opencv-opengl-project/app/build/intermediates/cxx/Debug/2l11p3n5/obj/arm64-v8a/libopencv_processor.so	1b28a4ee04b8d3ec
+0	3	0	clean	ec8b3c4d9d5a290f
+10	1378	1759853074735181944	CMakeFiles/opencv_processor.dir/opencv_processor.cpp.o	9437f10b3ef0795c
+10	1378	1759853074738193837	CMakeFiles/opencv_processor.dir/frame_processor.cpp.o	853906d783b0457d
+1378	1665	1759853075025316848	/home/deekshith/android-opencv-opengl-project/app/build/intermediates/cxx/Debug/2l11p3n5/obj/arm64-v8a/libopencv_processor.so	1b28a4ee04b8d3ec

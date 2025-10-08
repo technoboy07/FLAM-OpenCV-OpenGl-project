@@ -91,45 +91,58 @@ public class CameraHandler {
     }
 
     private void createCaptureSession() {
-        // For now, we'll skip the camera preview setup
-        // In a real implementation, you'd need to properly handle GLSurfaceView
-        Log.d(TAG, "Camera preview setup skipped - GLSurfaceView integration needed");
-        
-        /*
         try {
-            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-            captureRequestBuilder.addTarget(surface);
+            // Ensure SurfaceTexture is created before proceeding
+            glSurfaceView.createSurfaceTexture();
+            SurfaceTexture surfaceTexture = glSurfaceView.getSurfaceTexture();
+            
+            if (surfaceTexture == null) {
+                Log.e(TAG, "Failed to create SurfaceTexture");
+                isPreviewRunning = false;
+                return;
+            }
 
-            cameraDevice.createCaptureSession(
-                Collections.singletonList(surface),
-                new CameraCaptureSession.StateCallback() {
-                    @Override
-                    public void onConfigured(@NonNull CameraCaptureSession session) {
-                        captureSession = session;
-                        try {
-                            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-                            captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-                            
-                            session.setRepeatingRequest(captureRequestBuilder.build(), null, null);
-                            isPreviewRunning = true;
-                            Log.d(TAG, "Preview started");
-                        } catch (CameraAccessException e) {
-                            Log.e(TAG, "Failed to start preview", e);
+            if (surfaceTexture != null) {
+                surfaceTexture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
+                Surface surface = new Surface(surfaceTexture);
+
+                captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                captureRequestBuilder.addTarget(surface);
+
+                cameraDevice.createCaptureSession(
+                    Collections.singletonList(surface),
+                    new CameraCaptureSession.StateCallback() {
+                           @Override
+                           public void onConfigured(@NonNull CameraCaptureSession session) {
+                               captureSession = session;
+                               try {
+                                   captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+                                   captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+                                   
+                                   session.setRepeatingRequest(captureRequestBuilder.build(), null, null);
+                                   isPreviewRunning = true;
+                                   Log.d(TAG, "Camera preview started successfully - frames should now be sent to SurfaceTexture");
+                               } catch (CameraAccessException e) {
+                                   Log.e(TAG, "Failed to start preview", e);
+                               }
+                           }
+
+                        @Override
+                        public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+                            Log.e(TAG, "Capture session configuration failed");
                         }
-                    }
-
-                    @Override
-                    public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-                        Log.e(TAG, "Capture session configuration failed");
-                    }
-                },
-                null
-            );
-
+                    },
+                    null
+                );
+            } else {
+                Log.e(TAG, "Could not create surface texture");
+                isPreviewRunning = false;
+            }
+            
         } catch (CameraAccessException e) {
             Log.e(TAG, "Failed to create capture session", e);
+            isPreviewRunning = false;
         }
-        */
     }
 
     public void stopPreview() {
