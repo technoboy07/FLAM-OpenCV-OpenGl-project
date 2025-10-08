@@ -36,6 +36,7 @@ public class SimpleCameraHandler {
     private String cameraId;
     private Size previewSize;
     private boolean isPreviewRunning = false;
+    private boolean isSessionClosed = false;
     private HandlerThread backgroundThread;
     private Handler backgroundHandler;
 
@@ -147,7 +148,14 @@ public class SimpleCameraHandler {
                     public void onConfigured(@NonNull CameraCaptureSession session) {
                         Log.d(TAG, "Capture session configured");
                         captureSession = session;
+                        isSessionClosed = false;
                         try {
+                            // Check if session is still valid
+                            if (isSessionClosed) {
+                                Log.e(TAG, "Session is already closed, cannot start preview");
+                                return;
+                            }
+                            
                             // Minimal settings for Samsung compatibility
                             captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO);
                             
@@ -161,6 +169,8 @@ public class SimpleCameraHandler {
                             
                         } catch (CameraAccessException e) {
                             Log.e(TAG, "Failed to start preview", e);
+                        } catch (IllegalStateException e) {
+                            Log.e(TAG, "Session state error: " + e.getMessage());
                         }
                     }
 
@@ -182,11 +192,16 @@ public class SimpleCameraHandler {
         
         if (captureSession != null) {
             try {
-                captureSession.stopRepeating();
-                captureSession.close();
+                if (!isSessionClosed) {
+                    captureSession.stopRepeating();
+                    captureSession.close();
+                }
                 captureSession = null;
+                isSessionClosed = true;
             } catch (CameraAccessException e) {
                 Log.e(TAG, "Failed to stop capture session", e);
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Session state error during stop: " + e.getMessage());
             }
         }
 

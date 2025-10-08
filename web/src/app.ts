@@ -29,8 +29,21 @@ export class OpenCVWebApp {
         // Initialize performance chart
         this.performanceChart = new PerformanceChart('performance-chart');
         
-        // Initialize WebSocket client
-        this.webSocketClient = new WebSocketClient('ws://localhost:8080/ws');
+        // Initialize WebSocket client with dynamic URL
+        const wsUrl = this.getWebSocketUrl();
+        this.webSocketClient = new WebSocketClient(wsUrl);
+    }
+    
+    private getWebSocketUrl(): string {
+        // Try to get URL from URL parameters first
+        const urlParams = new URLSearchParams(window.location.search);
+        const wsHost = urlParams.get('ws_host') || 'localhost';
+        const wsPort = urlParams.get('ws_port') || '8080';
+        
+        // Use current host if not specified
+        const host = wsHost === 'localhost' ? window.location.hostname : wsHost;
+        
+        return `ws://${host}:${wsPort}/ws`;
     }
 
     private setupEventListeners(): void {

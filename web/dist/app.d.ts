@@ -8,6 +8,7 @@ export declare class OpenCVWebApp {
     constructor();
     private initializeElements;
     private initializeComponents;
+    private getWebSocketUrl;
     private setupEventListeners;
     private start;
     private handleFrameData;

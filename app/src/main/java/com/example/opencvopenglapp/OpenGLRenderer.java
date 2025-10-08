@@ -38,12 +38,12 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
             "  gl_FragColor = texture2D(uTexture, texCoord);" +
             "}";
 
-    // Quad vertices (x, y, z, u, v)
+    // Quad vertices (x, y, z, u, v) - Fixed for proper camera orientation and aspect ratio
     private static final float[] QUAD_VERTICES = {
-            -1.0f, -1.0f, 0.0f, 0.0f, 1.0f,  // Bottom left
-             1.0f, -1.0f, 0.0f, 1.0f, 1.0f,  // Bottom right
-            -1.0f,  1.0f, 0.0f, 0.0f, 0.0f,  // Top left
-             1.0f,  1.0f, 0.0f, 1.0f, 0.0f   // Top right
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // Bottom left
+             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // Bottom right
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,  // Top left
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f   // Top right
     };
 
     private FloatBuffer vertexBuffer;
@@ -102,6 +102,20 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.d(TAG, "Surface changed: " + width + "x" + height);
         GLES20.glViewport(0, 0, width, height);
+        
+        // Calculate aspect ratio and set up proper MVP matrix
+        float aspectRatio = (float) width / height;
+        float[] projectionMatrix = new float[16];
+        float[] viewMatrix = new float[16];
+        
+        // Set up orthographic projection to maintain aspect ratio
+        Matrix.orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1.0f, 1.0f, -1.0f, 1.0f);
+        Matrix.setIdentityM(viewMatrix, 0);
+        
+        // Combine projection and view matrices
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+        
+        Log.d(TAG, "Aspect ratio: " + aspectRatio);
     }
 
     @Override

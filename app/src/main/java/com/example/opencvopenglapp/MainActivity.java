@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private String[] modeNames = {"Grayscale", "Canny Edge", "Blur", "Original"};
     
     private FPSMonitor fpsMonitor;
+    private WebSocketClient webSocketClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         setupCamera();
         setupFPSMonitor();
+        setupWebSocket();
         
         // Always request permission first, don't start camera automatically
         requestCameraPermission();
@@ -66,7 +68,42 @@ public class MainActivity extends AppCompatActivity {
     private void setupFPSMonitor() {
         fpsMonitor = new FPSMonitor(fps -> runOnUiThread(() -> {
             fpsTextView.setText("FPS: " + String.format("%.1f", fps));
+            // Send frame data to WebSocket
+            if (webSocketClient != null && webSocketClient.isConnected() && cameraHandler != null) {
+                int width = cameraHandler.getPreviewSize() != null ? cameraHandler.getPreviewSize().getWidth() : 0;
+                int height = cameraHandler.getPreviewSize() != null ? cameraHandler.getPreviewSize().getHeight() : 0;
+                webSocketClient.sendFrameData(width, height, (float)fps, currentMode, (int)(System.currentTimeMillis() % 100));
+            }
         }));
+    }
+    
+    private void setupWebSocket() {
+        webSocketClient = new WebSocketClient();
+        webSocketClient.setCallback(new WebSocketClient.WebSocketCallback() {
+            @Override
+            public void onConnected() {
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "Connected to web viewer", Toast.LENGTH_SHORT).show();
+                });
+            }
+            
+            @Override
+            public void onDisconnected() {
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "Disconnected from web viewer", Toast.LENGTH_SHORT).show();
+                });
+            }
+            
+            @Override
+            public void onError(String error) {
+                runOnUiThread(() -> {
+                    Log.e(TAG, "WebSocket error: " + error);
+                });
+            }
+        });
+        
+        // Connect to WebSocket (you may need to change the IP address)
+        webSocketClient.connect();
     }
 
     private boolean checkCameraPermission() {
@@ -184,6 +221,9 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         if (glSurfaceView != null) {
             glSurfaceView.cleanup();
+        }
+        if (webSocketClient != null) {
+            webSocketClient.disconnect();
         }
         if (cameraHandler != null) {
             cameraHandler.stopPreview();
