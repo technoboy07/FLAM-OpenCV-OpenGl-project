@@ -124,14 +124,15 @@ public class SimpleCameraHandler {
 
     private void createCaptureSession() {
         try {
-            // Ensure SurfaceTexture is created
-            glSurfaceView.createSurfaceTexture();
+            // Get the SurfaceTexture (should already be created)
             SurfaceTexture surfaceTexture = glSurfaceView.getSurfaceTexture();
             
             if (surfaceTexture == null) {
-                Log.e(TAG, "Failed to create SurfaceTexture");
+                Log.e(TAG, "SurfaceTexture is null - camera cannot start");
                 return;
             }
+            
+            Log.d(TAG, "SurfaceTexture found, proceeding with capture session");
 
             surfaceTexture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
             Surface surface = new Surface(surfaceTexture);
@@ -257,3 +258,4 @@ public class SimpleCameraHandler {
         return previewSize;
     }
 }
+

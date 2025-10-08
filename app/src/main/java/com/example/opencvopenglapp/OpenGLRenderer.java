@@ -3,6 +3,7 @@ package com.example.opencvopenglapp;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.opengl.GLES11Ext;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -29,9 +30,10 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
             "}";
 
     private static final String FRAGMENT_SHADER_CODE =
+            "#extension GL_OES_EGL_image_external : require\n" +
             "precision mediump float;" +
             "varying vec2 texCoord;" +
-            "uniform sampler2D uTexture;" +
+            "uniform samplerExternalOES uTexture;" +
             "void main() {" +
             "  gl_FragColor = texture2D(uTexture, texCoord);" +
             "}";
@@ -130,7 +132,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // Bind texture
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         if (useCameraTexture && cameraTextureId != -1) {
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, cameraTextureId);
+            GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, cameraTextureId);
             Log.d(TAG, "Drawing camera texture: " + cameraTextureId);
         } else if (textureInitialized) {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);

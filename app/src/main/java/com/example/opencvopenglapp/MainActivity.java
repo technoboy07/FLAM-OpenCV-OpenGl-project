@@ -103,11 +103,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void startCamera() {
         try {
-            cameraHandler.startPreview();
-            updateResolutionText();
+            // Wait a moment for SurfaceTexture to be fully initialized
+            glSurfaceView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        cameraHandler.startPreview();
+                        updateResolutionText();
+                        
+                        Log.d(TAG, "Camera started successfully");
+                        Toast.makeText(MainActivity.this, "Camera started successfully - should see live feed", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to start camera", e);
+                        Toast.makeText(MainActivity.this, "Failed to start camera - showing test pattern", Toast.LENGTH_LONG).show();
+                        // Fallback to test pattern if camera fails
+                        glSurfaceView.showTestPattern();
+                    }
+                }
+            }, 500); // Wait 500ms for SurfaceTexture initialization
             
-            Log.d(TAG, "Camera started successfully");
-            Toast.makeText(this, "Camera started successfully - should see live feed", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e(TAG, "Failed to start camera", e);
             Toast.makeText(this, "Failed to start camera - showing test pattern", Toast.LENGTH_LONG).show();

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLES11Ext;
 import android.util.AttributeSet;
 import android.util.Log;
 import java.nio.ByteBuffer;
@@ -40,6 +41,14 @@ public class CameraGLSurfaceView extends GLSurfaceView {
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         
         openCVProcessor = new OpenCVProcessor();
+        
+        // Create SurfaceTexture immediately when GLSurfaceView is initialized
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                createSurfaceTextureInternal();
+            }
+        });
     }
 
     public void setCameraHandler(SimpleCameraHandler handler) {
@@ -62,41 +71,47 @@ public class CameraGLSurfaceView extends GLSurfaceView {
     }
     
     public void createSurfaceTexture() {
+        // This method is now called by camera handler when needed
+        // The actual creation happens in createSurfaceTextureInternal()
+        Log.d(TAG, "createSurfaceTexture called - SurfaceTexture should already exist");
+    }
+    
+    private void createSurfaceTextureInternal() {
         if (surfaceTexture == null) {
-            // Create SurfaceTexture on OpenGL thread
-            queueEvent(new Runnable() {
+            // Create OpenGL texture for camera - MUST use external texture for camera
+            int[] textures = new int[1];
+            GLES20.glGenTextures(1, textures, 0);
+            cameraTextureId = textures[0];
+            
+            // Configure texture for external use (camera)
+            GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, cameraTextureId);
+            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+            
+            // Create SurfaceTexture from OpenGL texture
+            surfaceTexture = new SurfaceTexture(cameraTextureId);
+            surfaceTexture.setDefaultBufferSize(1920, 1080);
+            
+            // Set up the SurfaceTexture listener to process camera frames
+            surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
                 @Override
-                public void run() {
-                    // Create OpenGL texture for camera
-                    int[] textures = new int[1];
-                    GLES20.glGenTextures(1, textures, 0);
-                    cameraTextureId = textures[0];
-                    
-                    // Configure texture
-                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, cameraTextureId);
-                    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-                    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-                    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-                    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-                    
-                    // Create SurfaceTexture from OpenGL texture
-                    surfaceTexture = new SurfaceTexture(cameraTextureId);
-                    surfaceTexture.setDefaultBufferSize(1920, 1080);
-                    
-                    // Set up the SurfaceTexture listener to process camera frames
-                    surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
+                public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                    // Must call on OpenGL thread
+                    queueEvent(new Runnable() {
                         @Override
-                        public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                        public void run() {
                             processCameraFrame();
                         }
                     });
-                    
-                    // Set the camera texture in the renderer
-                    renderer.setCameraTexture(cameraTextureId);
-                    
-                    Log.d(TAG, "SurfaceTexture created with OpenGL texture ID: " + cameraTextureId);
                 }
             });
+            
+            // Set the camera texture in the renderer
+            renderer.setCameraTexture(cameraTextureId);
+            
+            Log.d(TAG, "SurfaceTexture created with OpenGL texture ID: " + cameraTextureId);
         }
     }
     
