@@ -1,3 +1,17 @@
+# Screenshots
+
+Below are screenshots demonstrating the working module of the Real-Time Edge Detection Viewer:
+
+## Web Interface
+![Web Interface Screenshot](deployment/web-screenshot-1.jpg)
+
+## Android App Interface
+![Android App Screenshot](deployment/android-screenshot-1.jpg)
+
+## Original Camera Frame
+![Original Frame Screenshot](deployment/original-frame-1.jpg)
+
+These images showcase the real-time processing and visualization features of the application across both the web and Android platforms.
 # Android + OpenCV-C++ + OpenGL + TypeScript Web Viewer
 
 A comprehensive Android application that demonstrates real-time camera frame processing using OpenCV (C++) through JNI, OpenGL ES rendering, and a TypeScript-based web viewer for visualization.
