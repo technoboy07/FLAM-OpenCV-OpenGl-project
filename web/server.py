@@ -62,58 +62,58 @@ async def handle_client(websocket, path):
             "data": "Connected to OpenCV OpenGL Web Viewer Server"
         }
         await websocket.send(json.dumps(welcome_message))
-        
-        # Check if this is an Android client (based on user agent or other criteria)
+
         client_type = "web"  # Default to web client
-        
+
         # Send existing data to new client
         if latest_frame_data:
             await websocket.send(json.dumps(latest_frame_data))
         if latest_stats_data:
             await websocket.send(json.dumps(latest_stats_data))
-        
+
         # Listen for messages from client
         while True:
             try:
                 message = await websocket.recv()
                 data = json.loads(message)
-                
+
                 if data.get("type") == "frame":
-                    # This is data from Android app
+                    # Accept and forward frame data (including base64 image if present)
                     latest_frame_data = data
                     android_client = websocket
                     client_type = "android"
-                    
-                    # Forward to all web clients
+
+                    # Forward to all web clients (not the android client)
                     for client in list(connected_clients):
                         if client != websocket and client != android_client:
                             try:
                                 await client.send(message)
-                            except:
+                            except Exception as e:
+                                print(f"Error sending frame to client: {e}")
                                 connected_clients.discard(client)
-                                
+
                 elif data.get("type") == "stats":
-                    # This is stats from Android app
                     latest_stats_data = data
                     android_client = websocket
                     client_type = "android"
-                    
-                    # Forward to all web clients
+
+                    # Forward to all web clients (not the android client)
                     for client in list(connected_clients):
                         if client != websocket and client != android_client:
                             try:
                                 await client.send(message)
-                            except:
+                            except Exception as e:
+                                print(f"Error sending stats to client: {e}")
                                 connected_clients.discard(client)
-                                
+
                 print(f"Received {data.get('type', 'unknown')} data from {client_type} client")
-                
+
             except websockets.exceptions.ConnectionClosed:
                 break
             except Exception as e:
                 print(f"Error processing message from {websocket.remote_address}: {e}")
                 break
-                
+
     except websockets.exceptions.ConnectionClosed:
         print(f"Client disconnected: {websocket.remote_address}")
     except Exception as e:

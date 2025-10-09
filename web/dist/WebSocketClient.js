@@ -1,5 +1,5 @@
 export class WebSocketClient {
-    constructor(url = 'ws://localhost:8080/ws') {
+    constructor(url = "ws://192.168.29.82:8080/ws") {
         this.ws = null;
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 5;

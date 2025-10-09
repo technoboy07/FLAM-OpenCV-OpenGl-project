@@ -13,7 +13,7 @@ export class WebSocketClient {
     private onErrorCallback?: (error: string) => void;
     private onConnectionCallback?: (connected: boolean) => void;
 
-    constructor(url: string = 'ws://localhost:8080/ws') {
+    constructor(url: string = "ws://192.168.29.82:8080/ws") {
         this.url = url;
     }
 
