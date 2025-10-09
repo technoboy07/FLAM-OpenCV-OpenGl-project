@@ -3,13 +3,13 @@
 Below are screenshots demonstrating the working module of the Real-Time Edge Detection Viewer:
 
 ## Web Interface
-![Web Interface Screenshot](deployment/web-screenshot-1.jpg)
+![Web Interface Screenshot](deployment/web-screenshot-1.jpeg)
 
 ## Android App Interface
-![Android App Screenshot](deployment/android-screenshot-1.jpg)
+![Android App Screenshot](deployment/android-screenshot-1.jpeg)
 
 ## Original Camera Frame
-![Original Frame Screenshot](deployment/original-frame-1.jpg)
+![Original Frame Screenshot](deployment/original-frame-1.jpeg)
 
 These images showcase the real-time processing and visualization features of the application across both the web and Android platforms.
 # Android + OpenCV-C++ + OpenGL + TypeScript Web Viewer
